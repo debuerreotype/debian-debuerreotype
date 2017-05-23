@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+suite='stretch'
+timestamp='2017-01-01T00:00:00Z'
+
+expectedEpoch='1483228800'
+expectedSha256='426b8ef5a40588c61084cafbb5a187e6a8e1089da34821f314ea3369f90c8931'
+
+rootfs="$(mktemp -d)"
+trap "rm -rf '$rootfs'" EXIT
+
+set -x
+
+debuerreotype-init "$rootfs" "$suite" "$timestamp"
+[ "$(< "$rootfs/debuerreotype-epoch")" = "$expectedEpoch" ]
+
+debuerreotype-chroot "$rootfs" true
+
+debuerreotype-gen-sources-list "$rootfs" "$suite" http://deb.debian.org/debian http://security.debian.org
+
+sha256="$(debuerreotype-tar "$rootfs" - | sha256sum | cut -d' ' -f1)"
+[ "$sha256" = "$expectedSha256" ]
