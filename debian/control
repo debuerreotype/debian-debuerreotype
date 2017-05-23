@@ -14,6 +14,7 @@ Depends: bash,
          debian-archive-keyring,
          debootstrap (>= 1.0.83~),
          ${misc:Depends}
+Suggests: diffoscope
 Description: reproducible, snapshot-based Debian rootfs builder
  A set of scripts for building reproducible Debian rootfs tarballs based on
  snapshot.debian.org, especially for the purposes of Docker base images.
