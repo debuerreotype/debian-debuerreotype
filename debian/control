@@ -10,8 +10,7 @@ Vcs-Git: https://github.com/debuerreotype/debian-debuerreotype.git
 
 Package: debuerreotype
 Architecture: all
-Depends: bash,
-         debian-archive-keyring,
+Depends: debian-archive-keyring,
          debootstrap (>= 1.0.83~),
          ${misc:Depends}
 Suggests: diffoscope
