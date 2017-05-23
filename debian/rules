@@ -1,0 +1,9 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_link:
+	set -e; for s in scripts/*; do \
+		dh_link "usr/share/debuerreotype/$$s" "usr/sbin/$$(basename "$$s")"; \
+	done
