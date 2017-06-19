@@ -1,8 +1,8 @@
-debuerreotype (0.2-1) UNRELEASED; urgency=medium
+debuerreotype (0.2-1) unstable; urgency=medium
 
   * Update to 0.2 upstream release
 
- -- Tianon Gravi <tianon@debian.org>  Mon, 19 Jun 2017 12:14:43 -0700
+ -- Tianon Gravi <tianon@debian.org>  Mon, 19 Jun 2017 12:35:00 -0700
 
 debuerreotype (0.1-1) unstable; urgency=medium
 
