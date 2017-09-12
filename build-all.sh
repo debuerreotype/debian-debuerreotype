@@ -13,30 +13,21 @@ suites=(
 )
 
 thisDir="$(dirname "$(readlink -f "$BASH_SOURCE")")"
-self="$(basename "$0")"
+source "$thisDir/scripts/.constants.sh" \
+	--flags 'no-build' \
+	-- \
+	'[--no-build] <output-dir> <timestamp>' \
+	'output 2017-05-08T00:00:00Z'
 
-usage() {
-	cat <<-EOU
-		usage: $self <output-dir> <timestamp>
-		   ie: $self output 2017-05-08T00:00:00Z
-	EOU
-}
-eusage() {
-	if [ "$#" -gt 0 ]; then
-		echo >&2 "error: $*"
-	fi
-	usage >&2
-	exit 1
-}
-
-options="$(getopt -n "$self" -o '' --long 'no-build' -- "$@")" || eusage
-eval "set -- $options"
+eval "$dgetopt"
 build=1
 while true; do
 	flag="$1"; shift
+	dgetopt-case "$flag"
 	case "$flag" in
 		--no-build) build= ;; # for skipping "docker build"
 		--) break ;;
+		*) eusage "unknown flag '$flag'" ;;
 	esac
 done
 
@@ -60,13 +51,19 @@ echo "-- BUILDING TARBALLS FOR '$dpkgArch' FROM '$mirror/' --"
 echo
 
 for suite in "${suites[@]}"; do
-	testUrl="$secmirror/dists/$suite/updates/main/binary-$dpkgArch/Packages.gz"
+	doSkip=
 	case "$suite" in
-		testing|unstable)
-			testUrl="$mirror/dists/$suite/main/binary-$dpkgArch/Packages.gz"
+		testing|unstable) ;;
+		*)
+			if ! wget --quiet --spider "$secmirror/dists/$suite/updates/main/binary-$dpkgArch/Packages.gz"; then
+				doSkip=1
+			fi
 			;;
 	esac
-	if ! wget --quiet --spider "$testUrl"; then
+	if ! wget --quiet --spider "$mirror/dists/$suite/main/binary-$dpkgArch/Packages.gz"; then
+		doSkip=1
+	fi
+	if [ -n "$doSkip" ]; then
 		echo >&2
 		echo >&2 "warning: '$suite' not supported on '$dpkgArch' (at '$timestamp'); skipping"
 		echo >&2

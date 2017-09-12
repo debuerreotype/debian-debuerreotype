@@ -3,21 +3,18 @@ set -Eeuo pipefail
 
 thisDir="$(dirname "$(readlink -f "$BASH_SOURCE")")"
 source "$thisDir/scripts/.constants.sh" \
-	--flags 'no-build,codename-copy' \
+	--flags 'no-build' \
 	-- \
-	'[--no-build] [--codename-copy] <output-dir> <suite> <timestamp>' \
-	'output stretch 2017-05-08T00:00:00Z
---codename-copy output stable 2017-05-08T00:00:00Z'
+	'[--no-build] <output-dir> <suite>' \
+	'output stretch'
 
 eval "$dgetopt"
 build=1
-codenameCopy=
 while true; do
 	flag="$1"; shift
 	dgetopt-case "$flag"
 	case "$flag" in
 		--no-build) build= ;; # for skipping "docker build"
-		--codename-copy) codenameCopy=1 ;; # for copying a "stable.tar.xz" to "stretch.tar.xz" with updated sources.list (saves a lot of extra building work)
 		--) break ;;
 		*) eusage "unknown flag '$flag'" ;;
 	esac
@@ -25,7 +22,6 @@ done
 
 outputDir="${1:-}"; shift || eusage 'missing output-dir'
 suite="${1:-}"; shift || eusage 'missing suite'
-timestamp="${1:-}"; shift || eusage 'missing timestamp'
 
 mkdir -p "$outputDir"
 outputDir="$(readlink -f "$outputDir")"
@@ -45,74 +41,55 @@ ver="${ver%% *}"
 dockerImage="debuerreotype/debuerreotype:$ver"
 [ -z "$build" ] || docker build -t "$dockerImage" "$thisDir"
 
+raspbianDockerImage="$dockerImage-raspbian"
+[ -z "$build" ] || docker build -t "$raspbianDockerImage" - <<-EODF
+	FROM $dockerImage
+	RUN wget -O raspbian.deb 'https://archive.raspbian.org/raspbian/pool/main/r/raspbian-archive-keyring/raspbian-archive-keyring-udeb_20120528.2_all.udeb' \\
+		&& apt install -y ./raspbian.deb \\
+		&& rm raspbian.deb
+EODF
+
 docker run \
 	--rm \
 	"${securityArgs[@]}" \
-	--tmpfs /tmp:dev,exec,suid,noatime \
+	-v /tmp \
 	-w /tmp \
 	-e suite="$suite" \
-	-e timestamp="$timestamp" \
-	-e codenameCopy="$codenameCopy" \
 	-e TZ='UTC' -e LC_ALL='C' \
-	"$dockerImage" \
+	"$raspbianDockerImage" \
 	bash -Eeuo pipefail -c '
 		set -x
 
-		epoch="$(date --date "$timestamp" +%s)"
-		serial="$(date --date "@$epoch" +%Y%m%d)"
+		mirror="http://archive.raspbian.org/raspbian"
+
 		dpkgArch="$(dpkg --print-architecture)"
 
 		exportDir="output"
-		outputDir="$exportDir/$serial/$dpkgArch/$suite"
-
-		touch_epoch() {
-			while [ "$#" -gt 0 ]; do
-				local f="$1"; shift
-				touch --no-dereference --date="@$epoch" "$f"
-			done
-		}
+		outputDir="$exportDir/raspbian/$dpkgArch/$suite"
 
 		debuerreotypeScriptsDir="$(dirname "$(readlink -f "$(which debuerreotype-init)")")"
 
-		for archive in "" security; do
-			snapshotUrl="$("$debuerreotypeScriptsDir/.snapshot-url.sh" "@$epoch" "${archive:+debian-${archive}}")"
-			snapshotUrlFile="$exportDir/$serial/$dpkgArch/snapshot-url${archive:+-${archive}}"
-			mkdir -p "$(dirname "$snapshotUrlFile")"
-			echo "$snapshotUrl" > "$snapshotUrlFile"
-			touch_epoch "$snapshotUrlFile"
-		done
-
-		snapshotUrl="$(< "$exportDir/$serial/$dpkgArch/snapshot-url")"
 		mkdir -p "$outputDir"
-		wget -O "$outputDir/Release.gpg" "$snapshotUrl/dists/$suite/Release.gpg"
-		wget -O "$outputDir/Release" "$snapshotUrl/dists/$suite/Release"
+		wget -O "$outputDir/Release.gpg" "$mirror/dists/$suite/Release.gpg"
+		wget -O "$outputDir/Release" "$mirror/dists/$suite/Release"
 		gpgv \
-			--keyring /usr/share/keyrings/debian-archive-keyring.gpg \
-			--keyring /usr/share/keyrings/debian-archive-removed-keys.gpg \
+			--keyring /usr/share/keyrings/raspbian-archive-keyring.gpg \
 			"$outputDir/Release.gpg" \
 			"$outputDir/Release"
 
-		codename="$(awk -F ": " "\$1 == \"Codename\" { print \$2; exit }" "$outputDir/Release")"
-		if [ -n "$codenameCopy" ] && [ "$codename" = "$suite" ]; then
-			# if codename already is the same as suite, then making a copy does not make any sense
-			codenameCopy=
-		fi
-		if [ -n "$codenameCopy" ] && [ -z "$codename" ]; then
-			echo >&2 "error: --codename-copy specified but we failed to get a Codename for $suite"
-			exit 1
-		fi
-
 		{
-			initArgs=( --debian )
-			releaseSuite="$(awk -F ": " "\$1 == \"Suite\" { print \$2; exit }" "$outputDir/Release")"
-			case "$suite" in
-				# see https://bugs.debian.org/src:usrmerge for why merged-usr should not be in stable yet (mostly "dpkg" related bugs)
-				*oldstable|stable)
-					initArgs+=( --no-merged-usr )
-					;;
-			esac
+			debuerreotype-init --non-debian \
+				--arch armhf \
+				--keyring /usr/share/keyrings/raspbian-archive-keyring.gpg \
+				rootfs "$suite" "$mirror"
 
-			debuerreotype-init "${initArgs[@]}" rootfs "$suite" "@$epoch"
+			epoch="$(< rootfs/debuerreotype-epoch)"
+			touch_epoch() {
+				while [ "$#" -gt 0 ]; do
+					local f="$1"; shift
+					touch --no-dereference --date="@$epoch" "$f"
+				done
+			}
 
 			debuerreotype-minimizing-config rootfs
 			debuerreotype-apt-get rootfs update -qq
@@ -145,16 +122,11 @@ docker run \
 				local suite="$1"; shift
 				local variant="$1"; shift
 
-				# make a copy of the snapshot-facing sources.list file before we overwrite it
-				cp "$rootfs/etc/apt/sources.list" "$targetBase.sources-list-snapshot"
-				touch_epoch "$targetBase.sources-list-snapshot"
-
 				if [ "$variant" != "sbuild" ]; then
-					debuerreotype-gen-sources-list "$rootfs" "$suite" http://deb.debian.org/debian http://security.debian.org
 					debuerreotype-tar "$rootfs" "$targetBase.tar.xz"
 				else
 					# sbuild needs "deb-src" entries
-					debuerreotype-gen-sources-list --deb-src "$rootfs" "$suite" http://deb.debian.org/debian http://security.debian.org
+					debuerreotype-chroot "$rootfs" sed -ri -e "/^deb / p; s//deb-src /" /etc/apt/sources.list
 
 					# APT has odd issues with "Acquire::GzipIndexes=false" + "file://..." sources sometimes
 					# (which are used in sbuild for "--extra-package")
@@ -199,27 +171,6 @@ docker run \
 
 				create_artifacts "$targetBase" "$rootfs" "$suite" "$variant"
 			done
-
-			if [ -n "$codenameCopy" ]; then
-				codenameDir="$exportDir/$serial/$dpkgArch/$codename"
-				mkdir -p "$codenameDir"
-				tar -cC "$outputDir" --exclude="**/rootfs.*" . | tar -xC "$codenameDir"
-
-				for rootfs in rootfs*/; do
-					rootfs="${rootfs%/}" # "rootfs", "rootfs-slim", ...
-
-					variant="${rootfs#rootfs}" # "", "-slim", ...
-					variant="${variant#-}" # "", "slim", ...
-
-					variantDir="$codenameDir/$variant"
-					targetBase="$variantDir/rootfs"
-
-					# point sources.list back at snapshot.debian.org temporarily (but this time pointing at $codename instead of $suite)
-					debuerreotype-gen-sources-list "$rootfs" "$codename" "$(< "$exportDir/$serial/$dpkgArch/snapshot-url")" "$(< "$exportDir/$serial/$dpkgArch/snapshot-url-security")"
-
-					create_artifacts "$targetBase" "$rootfs" "$codename" "$variant"
-				done
-			fi
 		} >&2
 
 		tar -cC "$exportDir" .
