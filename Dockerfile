@@ -3,7 +3,7 @@
 # bootstrapping a new architecture?
 #   ./scripts/debuerreotype-init /tmp/docker-rootfs stretch now
 #   ./scripts/debuerreotype-minimizing-config /tmp/docker-rootfs
-#   ./scripts/debuerreotype-gen-sources-list /tmp/docker-rootfs stretch http://deb.debian.org/debian http://security.debian.org
+#   ./scripts/debuerreotype-gen-sources-list /tmp/docker-rootfs stretch http://deb.debian.org/debian http://security.debian.org/debian-security
 #   ./scripts/debuerreotype-tar /tmp/docker-rootfs - | docker import - debian:stretch-slim
 # alternate:
 #   debootstrap --variant=minbase stretch /tmp/docker-rootfs
@@ -15,14 +15,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		debootstrap \
 		wget ca-certificates \
 		xz-utils \
+		\
+		gnupg dirmngr \
 	&& rm -rf /var/lib/apt/lists/*
 
-COPY scripts /opt/debuerreotype/scripts
+# see ".dockerignore"
+COPY . /opt/debuerreotype
 RUN set -ex; \
 	cd /opt/debuerreotype/scripts; \
 	for f in debuerreotype-*; do \
 		ln -svL "$PWD/$f" "/usr/local/bin/$f"; \
-	done
+	done; \
+	version="$(debuerreotype-version)"; \
+	[ "$version" != 'unknown' ]; \
+	echo "debuerreotype version $version"
 
 WORKDIR /tmp
 

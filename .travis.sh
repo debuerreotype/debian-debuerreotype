@@ -5,12 +5,21 @@ epoch="$(TZ=UTC date --date "$TIMESTAMP" +%s)"
 serial="$(TZ=UTC date --date "@$epoch" +%Y%m%d)"
 
 buildArgs=()
-if [ -n "${CODENAME:-}" ]; then
+if [ "$SUITE" = 'eol' ]; then
+	buildArgs+=( '--eol' )
+	SUITE="$CODENAME"
+elif [ -n "${CODENAME:-}" ]; then
 	buildArgs+=( '--codename-copy' )
+fi
+if [ -n "${ARCH:-}" ]; then
+	buildArgs+=( "--arch=${ARCH}" )
+	if [ "$ARCH" != 'i386' ]; then
+		buildArgs+=( '--qemu' )
+	fi
 fi
 buildArgs+=( travis "$SUITE" "@$epoch" )
 
-checkFile="travis/$serial/amd64/${CODENAME:-$SUITE}/rootfs.tar.xz"
+checkFile="travis/$serial/${ARCH:-amd64}/${CODENAME:-$SUITE}/rootfs.tar.xz"
 
 set -x
 
