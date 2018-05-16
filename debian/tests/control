@@ -1,3 +1,8 @@
 Tests: stretch
-Depends: debuerreotype, debootstrap
+Depends: ca-certificates,
+         debootstrap,
+         debuerreotype,
+         diffoscope,
+         wget,
+         xz-utils
 Restrictions: allow-stderr, needs-root

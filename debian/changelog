@@ -1,6 +1,7 @@
 debuerreotype (0.5-1) UNRELEASED; urgency=medium
 
   * Update to 0.5 upstream release
+  * Update autopkgtests to show a relevant "diffoscope" result on failure
 
  -- Tianon Gravi <tianon@debian.org>  Tue, 10 Apr 2018 09:43:32 -0700
 
