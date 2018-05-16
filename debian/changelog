@@ -1,6 +1,11 @@
-debuerreotype (0.5-1) UNRELEASED; urgency=medium
+debuerreotype (0.6-1) UNRELEASED; urgency=medium
 
-  * Update to 0.5 upstream release
+  * Update to 0.6 upstream release; notable PRs (since 0.4):
+    - https://github.com/debuerreotype/debuerreotype/pull/24
+    - https://github.com/debuerreotype/debuerreotype/pull/26
+    - https://github.com/debuerreotype/debuerreotype/pull/28
+    - https://github.com/debuerreotype/debuerreotype/pull/31
+    - https://github.com/debuerreotype/debuerreotype/pull/32
   * Update autopkgtests to show a relevant "diffoscope" result on failure
 
  -- Tianon Gravi <tianon@debian.org>  Tue, 10 Apr 2018 09:43:32 -0700

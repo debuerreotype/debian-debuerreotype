@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# see https://people.debian.org/~tianon/debuerreotype/
-
 suite='stretch'
 timestamp='2017-01-01T00:00:00Z'
 
 expectedEpoch='1483228800'
-expectedSha256='2839acd297e012d00683008af92e35e17e3f3b6eb0c4910e3d545f4f8e0ca450'
+expectedSha256='5ba341c3235d386744e9ea5db801174d03481c62c5f6e9463e6c5c51e91073f0'
 
 tempDir="$(mktemp -d)"
 trap "rm -rf '$tempDir'" EXIT
@@ -20,10 +18,12 @@ debuerreotype-init "$rootfs" "$suite" "$timestamp"
 
 debuerreotype-chroot "$rootfs" true
 
-debuerreotype-gen-sources-list "$rootfs" "$suite" http://deb.debian.org/debian http://security.debian.org
+debuerreotype-gen-sources-list "$rootfs" "$suite" http://deb.debian.org/debian http://security.debian.org/debian-security
 
 debuerreotype-tar "$rootfs" "$tempDir/actual.tar"
 sha256="$(sha256sum "$tempDir/actual.tar" | cut -d' ' -f1)"
+
+# see https://people.debian.org/~tianon/debuerreotype/
 
 if [ "$sha256" != "$expectedSha256" ]; then
 	(
