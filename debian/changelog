@@ -1,3 +1,15 @@
+debuerreotype (0.7-1) UNRELEASED; urgency=medium
+
+  * Update to 0.7 upstream release; notable PRs:
+    - https://github.com/debuerreotype/debuerreotype/pull/34
+    - https://github.com/debuerreotype/debuerreotype/pull/35
+      (fixes autopkgtests regression with debootstrap 1.0.102)
+    - https://github.com/debuerreotype/debuerreotype/pull/37
+    - https://github.com/debuerreotype/debuerreotype/pull/36
+    - https://github.com/debuerreotype/debuerreotype/pull/38
+
+ -- Tianon Gravi <tianon@debian.org>  Thu, 14 Jun 2018 07:31:34 -0700
+
 debuerreotype (0.6-1) unstable; urgency=medium
 
   * Update to 0.6 upstream release; notable PRs (since 0.4):
