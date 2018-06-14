@@ -1,4 +1,4 @@
-debuerreotype (0.7-1) UNRELEASED; urgency=medium
+debuerreotype (0.7-1) unstable; urgency=medium
 
   * Update to 0.7 upstream release; notable PRs:
     - https://github.com/debuerreotype/debuerreotype/pull/34
@@ -8,7 +8,7 @@ debuerreotype (0.7-1) UNRELEASED; urgency=medium
     - https://github.com/debuerreotype/debuerreotype/pull/36
     - https://github.com/debuerreotype/debuerreotype/pull/38
 
- -- Tianon Gravi <tianon@debian.org>  Thu, 14 Jun 2018 07:31:34 -0700
+ -- Tianon Gravi <tianon@debian.org>  Thu, 14 Jun 2018 07:37:43 -0700
 
 debuerreotype (0.6-1) unstable; urgency=medium
 
