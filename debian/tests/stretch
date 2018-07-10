@@ -5,7 +5,7 @@ suite='stretch'
 timestamp='2017-01-01T00:00:00Z'
 
 expectedEpoch='1483228800'
-expectedSha256='5ba341c3235d386744e9ea5db801174d03481c62c5f6e9463e6c5c51e91073f0'
+expectedSha256='26490ed3400a5029b8b5939c6cebd38691e28ea5c616bb54f25f758125417c5f'
 
 tempDir="$(mktemp -d)"
 trap "rm -rf '$tempDir'" EXIT
