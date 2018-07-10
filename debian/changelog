@@ -5,6 +5,7 @@ debuerreotype (0.8-1) UNRELEASED; urgency=medium
       (read-only bind-mount of /etc/resolv.conf)
     - https://github.com/debuerreotype/debuerreotype/pull/42
       (fix jessie buildability, CloudFlare DNS, sources.list order)
+  * Update Standards-Version to 4.1.4
 
  -- Tianon Gravi <tianon@debian.org>  Tue, 10 Jul 2018 08:21:23 -0700
 
