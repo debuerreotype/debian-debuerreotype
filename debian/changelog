@@ -1,3 +1,15 @@
+debuerreotype (0.9-1) UNRELEASED; urgency=medium
+
+  * Update to 0.9 upstream release; notable PRs:
+    - https://github.com/debuerreotype/debuerreotype/pull/50
+      (disable "merged-usr" for official Debian builds)
+    - https://github.com/debuerreotype/debuerreotype/pull/51
+      (only dpkg-divert upstart's initctl where upstart exists)
+    - https://github.com/debuerreotype/debuerreotype/pull/54
+      (fix reproducibility of sources.list over time)
+
+ -- Tianon Gravi <tianon@debian.org>  Wed, 27 Feb 2019 14:17:32 -0800
+
 debuerreotype (0.8-1) unstable; urgency=medium
 
   * Update to 0.8 upstream release; notable PRs:
