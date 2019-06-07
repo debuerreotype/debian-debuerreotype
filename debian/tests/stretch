@@ -18,7 +18,9 @@ debuerreotype-init "$rootfs" "$suite" "$timestamp"
 
 debuerreotype-chroot "$rootfs" true
 
-debuerreotype-gen-sources-list "$rootfs" "$suite" http://deb.debian.org/debian http://security.debian.org/debian-security
+debuerreotype-debian-sources-list "$rootfs" "$suite"
+# remove effect of https://github.com/debuerreotype/debuerreotype/pull/56 (to avoid regenerating expected tarballs to compensate)
+sed -i -e '/^#/d' "$rootfs/etc/apt/sources.list"
 
 debuerreotype-tar "$rootfs" "$tempDir/actual.tar"
 sha256="$(sha256sum "$tempDir/actual.tar" | cut -d' ' -f1)"
