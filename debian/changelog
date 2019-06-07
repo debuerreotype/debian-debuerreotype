@@ -2,6 +2,7 @@ debuerreotype (0.10-1) UNRELEASED; urgency=medium
 
   * Update to 0.10 upstream release (very focused on building EOL suites)
     - https://github.com/debuerreotype/debuerreotype/releases/tag/0.10
+  * Update to compat level 11, Standards-Version 4.3.0, https copyright Format
 
  -- Tianon Gravi <tianon@debian.org>  Thu, 06 Jun 2019 17:17:32 -0700
 

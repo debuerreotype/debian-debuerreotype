@@ -2,8 +2,8 @@ Source: debuerreotype
 Maintainer: Tianon Gravi <tianon@debian.org>
 Section: admin
 Priority: optional
-Standards-Version: 4.1.4
-Build-Depends: debhelper (>= 10~)
+Standards-Version: 4.3.0
+Build-Depends: debhelper (>= 11~)
 Homepage: https://github.com/debuerreotype/debuerreotype
 Vcs-Browser: https://github.com/debuerreotype/debian-debuerreotype
 Vcs-Git: https://github.com/debuerreotype/debian-debuerreotype.git
