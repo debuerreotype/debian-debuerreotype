@@ -10,8 +10,8 @@ Vcs-Git: https://github.com/debuerreotype/debian-debuerreotype.git
 
 Package: debuerreotype
 Architecture: all
-Depends: debian-archive-keyring, ${misc:Depends}
-Recommends: debootstrap
+Depends: ${misc:Depends}
+Recommends: debian-archive-keyring, debootstrap, wget
 Suggests: diffoscope
 Description: reproducible, snapshot-based Debian rootfs builder
  A set of scripts for building reproducible Debian rootfs tarballs based on
