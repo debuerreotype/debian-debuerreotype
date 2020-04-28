@@ -6,6 +6,8 @@ debuerreotype (0.10-2) UNRELEASED; urgency=medium
   [ Debian Janitor ]
   * Bump debhelper from old 11 to 12.
   * Set debhelper-compat version in Build-Depends.
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse.
 
  -- Tianon Gravi <tianon@debian.org>  Fri, 31 Jan 2020 10:51:26 -0800
 
