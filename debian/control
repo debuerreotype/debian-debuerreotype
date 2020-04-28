@@ -3,7 +3,7 @@ Maintainer: Tianon Gravi <tianon@debian.org>
 Section: admin
 Priority: optional
 Standards-Version: 4.3.0
-Build-Depends: debhelper (>= 11~)
+Build-Depends: debhelper (>= 12~)
 Homepage: https://github.com/debuerreotype/debuerreotype
 Vcs-Browser: https://github.com/debuerreotype/debian-debuerreotype
 Vcs-Git: https://github.com/debuerreotype/debian-debuerreotype.git

@@ -1,6 +1,10 @@
 debuerreotype (0.10-2) UNRELEASED; urgency=medium
 
+  [ Tianon Gravi ]
   * Add "wget" to Recommends and move "debian-archive-keyring" to Recommends
+
+  [ Debian Janitor ]
+  * Bump debhelper from old 11 to 12.
 
  -- Tianon Gravi <tianon@debian.org>  Fri, 31 Jan 2020 10:51:26 -0800
 
