@@ -1,4 +1,4 @@
-debuerreotype (0.10-2) UNRELEASED; urgency=medium
+debuerreotype (0.10-2) unstable; urgency=medium
 
   [ Tianon Gravi ]
   * Add "wget" to Recommends and move "debian-archive-keyring" to Recommends
@@ -14,7 +14,7 @@ debuerreotype (0.10-2) UNRELEASED; urgency=medium
   * Adjust autopkgtest to include removed keyrings (Closes: #983512)
   * Add "arm64" to autopkgtest, and be more forgiving (Closes: #983513)
 
- -- Tianon Gravi <tianon@debian.org>  Fri, 31 Jan 2020 10:51:26 -0800
+ -- Tianon Gravi <tianon@debian.org>  Thu, 25 Feb 2021 12:56:24 -0800
 
 debuerreotype (0.10-1) unstable; urgency=medium
 
