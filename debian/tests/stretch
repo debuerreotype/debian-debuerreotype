@@ -5,7 +5,13 @@ suite='stretch'
 timestamp='2017-01-01T00:00:00Z'
 
 expectedEpoch='1483228800'
-expectedSha256='26490ed3400a5029b8b5939c6cebd38691e28ea5c616bb54f25f758125417c5f'
+
+declare -A expectedSha256s=(
+	['amd64']='26490ed3400a5029b8b5939c6cebd38691e28ea5c616bb54f25f758125417c5f'
+	['arm64']='45e5e0c6da27db14de19a600663140db1f85f7516a856bf00957436e93e1f684'
+)
+dpkgArch="$(dpkg --print-architecture)"
+expectedSha256="${expectedSha256s["$dpkgArch"]:-}"
 
 tempDir="$(mktemp -d)"
 trap "rm -rf '$tempDir'" EXIT
@@ -20,7 +26,7 @@ gpg --batch --no-default-keyring --keyring "$keyring" --import \
 	/usr/share/keyrings/debian-archive-keyring.gpg \
 	/usr/share/keyrings/debian-archive-removed-keys.gpg
 
-debuerreotype-init --keyring="$keyring" "$rootfs" "$suite" "$timestamp"
+debuerreotype-init --arch="$dpkgArch" --keyring="$keyring" "$rootfs" "$suite" "$timestamp"
 [ "$(< "$rootfs/debuerreotype-epoch")" = "$expectedEpoch" ]
 
 debuerreotype-chroot "$rootfs" true
@@ -35,6 +41,16 @@ sha256="$(sha256sum "$tempDir/actual.tar" | cut -d' ' -f1)"
 # see https://people.debian.org/~tianon/debuerreotype/
 
 if [ "$sha256" != "$expectedSha256" ]; then
+	if [ -z "$expectedSha256" ]; then
+		(
+			set +x
+			echo >&2
+			echo >&2 "WARNING: no expected SHA256 for '$dpkgArch' known -- please file a bug with this full build output against src:debuerreotype!"
+			echo >&2
+		)
+		exit 0
+	fi
+
 	(
 		set +x
 		echo >&2
@@ -42,7 +58,7 @@ if [ "$sha256" != "$expectedSha256" ]; then
 		echo >&2
 	)
 
-	toCompare="https://people.debian.org/~tianon/debuerreotype/$suite--$timestamp--$expectedSha256.txz"
+	toCompare="https://people.debian.org/~tianon/debuerreotype/$suite--$timestamp--$dpkgArch--$expectedSha256.txz"
 	wget -qO "$tempDir/expected.txz" "$toCompare"
 	xz -d < "$tempDir/expected.txz" > "$tempDir/expected.tar"
 	diffoscope >&2 "$tempDir/expected.tar" "$tempDir/actual.tar"

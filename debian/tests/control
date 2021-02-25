@@ -7,3 +7,4 @@ Depends: ca-certificates,
          wget,
          xz-utils
 Restrictions: allow-stderr, needs-root
+#Architecture: amd64, arm64

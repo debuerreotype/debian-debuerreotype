@@ -12,6 +12,7 @@ debuerreotype (0.10-2) UNRELEASED; urgency=medium
 
   [ Tianon Gravi ]
   * Adjust autopkgtest to include removed keyrings (Closes: #983512)
+  * Add "arm64" to autopkgtest, and be more forgiving (Closes: #983513)
 
  -- Tianon Gravi <tianon@debian.org>  Fri, 31 Jan 2020 10:51:26 -0800
 
