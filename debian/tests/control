@@ -3,6 +3,7 @@ Depends: ca-certificates,
          debootstrap,
          debuerreotype,
          diffoscope,
+         gnupg,
          wget,
          xz-utils
 Restrictions: allow-stderr, needs-root

@@ -13,7 +13,14 @@ rootfs="$tempDir/rootfs"
 
 set -x
 
-debuerreotype-init "$rootfs" "$suite" "$timestamp"
+# make a new keyring that contains all archive keys so this still works in the future too
+# (see also "debian.sh" in the debuerreotype examples, which this is a hyper-simplified version of)
+keyring="$tempDir/keyring.gpg"
+gpg --batch --no-default-keyring --keyring "$keyring" --import \
+	/usr/share/keyrings/debian-archive-keyring.gpg \
+	/usr/share/keyrings/debian-archive-removed-keys.gpg
+
+debuerreotype-init --keyring="$keyring" "$rootfs" "$suite" "$timestamp"
 [ "$(< "$rootfs/debuerreotype-epoch")" = "$expectedEpoch" ]
 
 debuerreotype-chroot "$rootfs" true
