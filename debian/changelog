@@ -1,3 +1,15 @@
+debuerreotype (0.10-3) UNRELEASED; urgency=medium
+
+  * Add several more architecture hashes to autopkgtests:
+    - armel
+    - armhf
+    - i386
+    - mips64el
+    - ppc64el
+    - s390x
+
+ -- Tianon Gravi <tianon@debian.org>  Tue, 02 Mar 2021 08:32:12 -0800
+
 debuerreotype (0.10-2) unstable; urgency=medium
 
   [ Tianon Gravi ]
