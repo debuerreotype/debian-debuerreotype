@@ -1,5 +1,6 @@
 Tests: stretch
 Depends: ca-certificates,
+         debian-archive-keyring,
          debootstrap,
          debuerreotype,
          diffoscope,
