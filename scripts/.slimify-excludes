@@ -3,17 +3,17 @@
 
 # https://wiki.ubuntu.com/ReducingDiskFootprint#Drop_unnecessary_files
 /usr/share/doc/*
-/usr/share/groff/*
 /usr/share/info/*
 /usr/share/linda/*
 /usr/share/lintian/overrides/*
 /usr/share/locale/*
 /usr/share/man/*
+#/usr/share/groff/* (https://github.com/debuerreotype/debuerreotype/issues/87)
 
-# https://anonscm.debian.org/cgit/collab-maint/localepurge.git/tree/usr/share/localepurge/gen-dpkg-cfg.pl?id=b32c8d46d43be2027096f5a202ac789a637ceb39#n9
-/usr/share/locale/*
-/usr/share/gnome/help/*/*
+# https://salsa.debian.org/elmig-guest/localepurge/-/blob/176446028ca719d65993eb01e39d7040fbbcf12d/usr/share/localepurge/gen-dpkg-cfg.pl#L9-20
 /usr/share/doc/kde/HTML/*/*
+/usr/share/gnome/help/*/*
+/usr/share/locale/*
 /usr/share/omf/*/*-*.emf
 
 # see also .slimify-includes
