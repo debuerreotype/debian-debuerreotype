@@ -1,4 +1,4 @@
-debuerreotype (0.10-3) UNRELEASED; urgency=medium
+debuerreotype (0.14-1) UNRELEASED; urgency=medium
 
   [ Tianon Gravi ]
   * Add several more architecture hashes to autopkgtests:
@@ -12,7 +12,11 @@ debuerreotype (0.10-3) UNRELEASED; urgency=medium
   [ Gianfranco Costamagna ]
   * Depend on debian-archive-keyring for autopkgtests (Closes: #985963)
 
- -- Tianon Gravi <tianon@debian.org>  Tue, 02 Mar 2021 08:32:12 -0800
+  [ Tianon Gravi ]
+  * Update to 0.14 upstream release
+    - most notable change is more correct "/etc/machine-id" handling
+
+ -- Tianon Gravi <tianon@debian.org>  Fri, 18 Mar 2022 15:00:17 -0700
 
 debuerreotype (0.10-2) unstable; urgency=medium
 

@@ -6,18 +6,21 @@ timestamp='2017-01-01T00:00:00Z'
 
 expectedEpoch='1483228800'
 
+# https://people.debian.org/~tianon/debuerreotype/
 declare -A expectedSha256s=(
-	['amd64']='26490ed3400a5029b8b5939c6cebd38691e28ea5c616bb54f25f758125417c5f'
-	['arm64']='45e5e0c6da27db14de19a600663140db1f85f7516a856bf00957436e93e1f684'
-	['armel']='9935d1ffc1316d9a03b223225f909e6d229f96a437b49a23abb1e33406c43e3d'
-	['armhf']='feaef36fd7a5e202a426099b5e110d91da234f17c63b77ac7169d3da21079878'
-	['i386']='800eb45aa8d0f8132533832cd4483dab47450ef86fb86874d9a2994616c4f3a1'
-	['mips64el']='63ceab271ebaacc8036f3790a7ac206e4f6662cfb5669be00889993f14a82abe'
-	['ppc64el']='31876452b695db0843cf81a48b0a236edf52c5eb68e730d8e041383ed511e7cc'
-	['s390x']='587779b5c2f8defaa2de40755193c814358db34a1f3c82d68038a1ae226ccff3'
+	['amd64']='cff511450d3ddec4defc51be1850ca44e527e126aabfa1b6649354f2f2a568f4'
+	['arm64']='81ad4f5e7c10b15fc8389c1386e1fe1b2d05bc61d404e10473f5f5a0acde464c'
+	['armel']='596117e125f6e0828471564bd5d4f9bdd1ed654f7d84c21e7ab9d640e789763f'
+	['armhf']='9e0f63a3d5442fcd1408d61a9c592355138334ddc5c3fb471d5f131511cf286c'
+	['i386']='b4e574904703114291f1c42bd80744b1da333d95cf5c00e8e71ba09241ca66ae'
+	['mips64el']='767982e9ca353058d9ca44f410e0367071ebf9938a4a996e3ed9139d57bc987f'
+	['ppc64el']='99bc8a072448360be9ff741b98466835bc0f270041784cacbcb3803f8d3fbb6a'
+	['s390x']='7ad6fa1abaf9d8cb3fd9d1257e24363bc842f0fe204e98d0a2aa995541b62b1c'
 )
 dpkgArch="$(dpkg --print-architecture)"
 expectedSha256="${expectedSha256s["$dpkgArch"]:-}"
+
+expectedCompareUrl="https://people.debian.org/~tianon/debuerreotype/$suite--$timestamp--0.14--$dpkgArch--$expectedSha256.txz"
 
 tempDir="$(mktemp -d)"
 trap "rm -rf '$tempDir'" EXIT
@@ -61,11 +64,11 @@ if [ "$sha256" != "$expectedSha256" ]; then
 		set +x
 		echo >&2
 		echo >&2 'ERROR: expected SHA256 does not match actual -- downloading pristine source to compare (via diffoscope)'
+		echo >&2 "  - $expectedCompareUrl"
 		echo >&2
 	)
 
-	toCompare="https://people.debian.org/~tianon/debuerreotype/$suite--$timestamp--$dpkgArch--$expectedSha256.txz"
-	wget -qO "$tempDir/expected.txz" "$toCompare"
+	wget -qO "$tempDir/expected.txz" "$expectedCompareUrl"
 	xz -d < "$tempDir/expected.txz" > "$tempDir/expected.tar"
 	diffoscope >&2 "$tempDir/expected.tar" "$tempDir/actual.tar"
 	exit 1
