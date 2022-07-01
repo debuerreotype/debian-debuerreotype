@@ -1,3 +1,12 @@
+debuerreotype (0.15-1) UNRELEASED; urgency=medium
+
+  * Update to 0.15 upstream release
+    - support for deb822-style sources
+    - replaces security.debian.org with deb.debian.org
+  * skip riscv64 in autopkgtests (ports architecture, harder to test)
+
+ -- Tianon Gravi <tianon@debian.org>  Fri, 01 Jul 2022 11:33:20 -0700
+
 debuerreotype (0.14-1) unstable; urgency=medium
 
   [ Tianon Gravi ]

@@ -15,10 +15,16 @@ declare -A expectedSha256s=(
 	['i386']='b4e574904703114291f1c42bd80744b1da333d95cf5c00e8e71ba09241ca66ae'
 	['mips64el']='767982e9ca353058d9ca44f410e0367071ebf9938a4a996e3ed9139d57bc987f'
 	['ppc64el']='99bc8a072448360be9ff741b98466835bc0f270041784cacbcb3803f8d3fbb6a'
+	['riscv64']='ports'
 	['s390x']='7ad6fa1abaf9d8cb3fd9d1257e24363bc842f0fe204e98d0a2aa995541b62b1c'
 )
 dpkgArch="$(dpkg --print-architecture)"
 expectedSha256="${expectedSha256s["$dpkgArch"]:-}"
+
+if [ "$expectedSha256" = 'ports' ]; then
+	echo >&2 "aw, '$dpkgArch' is a ports arch -- bailing early!"
+	exit 0
+fi
 
 expectedCompareUrl="https://people.debian.org/~tianon/debuerreotype/$suite--$timestamp--0.14--$dpkgArch--$expectedSha256.txz"
 
@@ -43,6 +49,8 @@ debuerreotype-chroot "$rootfs" true
 debuerreotype-debian-sources-list "$rootfs" "$suite"
 # remove effect of https://github.com/debuerreotype/debuerreotype/pull/56 (to avoid regenerating expected tarballs to compensate)
 sed -i -e '/^#/d' "$rootfs/etc/apt/sources.list"
+# remove effect of https://github.com/debuerreotype/debuerreotype/pull/135 (^^^)
+sed -i -e 's!deb.debian.org/debian-security!security.debian.org/debian-security!g' "$rootfs/etc/apt/sources.list"
 
 debuerreotype-tar "$rootfs" "$tempDir/actual.tar"
 sha256="$(sha256sum "$tempDir/actual.tar" | cut -d' ' -f1)"
