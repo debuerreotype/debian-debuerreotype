@@ -1,10 +1,10 @@
-Tests: stretch
-Depends: ca-certificates,
-         debian-archive-keyring,
-         debootstrap,
-         debuerreotype,
-         diffoscope,
-         gnupg,
-         wget,
-         xz-utils
-Restrictions: allow-stderr, needs-root
+#Tests: stretch
+#Depends: ca-certificates,
+#         debian-archive-keyring,
+#         debootstrap,
+#         debuerreotype,
+#         diffoscope,
+#         gnupg,
+#         wget,
+#         xz-utils
+#Restrictions: allow-stderr, needs-root

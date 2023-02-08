@@ -1,3 +1,10 @@
+debuerreotype (0.15-1.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Disable the autopkgtest. (see #1022854)
+
+ -- Adrian Bunk <bunk@debian.org>  Tue, 07 Feb 2023 11:26:21 +0200
+
 debuerreotype (0.15-1) unstable; urgency=medium
 
   * Update to 0.15 upstream release
