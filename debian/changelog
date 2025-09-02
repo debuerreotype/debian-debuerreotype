@@ -1,3 +1,10 @@
+debuerreotype (0.16-1) UNRELEASED; urgency=medium
+
+  * Update to 0.16 upstream release
+    - prefer .pgp keyring files
+
+ -- Tianon Gravi <tianon@debian.org>  Tue, 02 Sep 2025 14:11:44 -0700
+
 debuerreotype (0.15-1.1) unstable; urgency=medium
 
   * Non-maintainer upload.
